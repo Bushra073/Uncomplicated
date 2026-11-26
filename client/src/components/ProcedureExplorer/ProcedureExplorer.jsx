@@ -19,7 +19,7 @@ import CategoryCard from '../Procedures/CategoryCard'
 import ProcedureCard from '../Procedures/ProcedureCard'
 import { getCategoryTheme } from '../Procedures/categoryThemes'
 
-const API_URL = 'http://localhost:5000/api'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 export default function ProcedureExplorer() {
   const [categories, setCategories] = useState([])

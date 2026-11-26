@@ -14,7 +14,7 @@ import {
 import { useAuth } from '../../context/AuthContext'
 import { getCategoryTheme } from './categoryThemes'
 
-const API_URL = 'http://localhost:5000/api'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 const requirementStyles = {
   mandatory: 'bg-red-100 text-red-800',
@@ -477,6 +477,7 @@ export default function DocumentChecklist({
             </article>
           )
         })}
+
 
         {requirements.length === 0 && (
           <p className="rounded-2xl bg-white/40 p-5 text-center text-sm opacity-70">
