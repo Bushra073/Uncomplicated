@@ -1,2 +1,27 @@
-server/.env
+# Dependencies
+node_modules/
+
+# Build files
+dist/
+dist-ssr/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+*.local
+
+# Private uploads
 server/private-uploads/
+
+# Database backups
+*.sql
+
+# Logs
+logs/
+*.log
+
+# Editor files
+.vscode/
+.idea/
+.DS_Store
