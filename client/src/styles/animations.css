@@ -1,54 +1,23 @@
 
 /* =====================================
    UNCOMPLICATED — Wordmark Animation
+   Keep the original complicated → uncomplicated reveal.
 ===================================== */
 
-.hero-wordmark {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  overflow: hidden;
-}
-
 .hero-wordmark .wordmark {
-  position: relative;
-  display: grid;
-  width: max-content;
-  max-width: 100%;
-  font-size: clamp(2.5rem, 8vw, 7rem);
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.wordmark__old,
-.wordmark__prefix,
-.wordmark__final {
-  grid-area: 1 / 1;
+  isolation: isolate;
 }
 
 .wordmark__old {
-  position: relative;
-  z-index: 1;
-  color: #e5f1e9;
   animation: old-word-exit 0.7s ease-in 1.6s forwards;
 }
 
 .wordmark__prefix {
-  position: relative;
-  z-index: 2;
-  justify-self: start;
-  color: #d0f0dc;
-  opacity: 0;
-  transform: translateX(-0.3em) scale(0.7);
-  transform-origin: left center;
-  animation: prefix-push 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s forwards;
+  animation:
+    prefix-push 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s forwards;
 }
 
 .wordmark__final {
-  position: relative;
-  z-index: 3;
-  color: #f0f6f0;
-  opacity: 0;
   animation: final-word-reveal 0.8s ease-out 2.4s forwards;
 }
 
@@ -88,5 +57,50 @@
     opacity: 1;
     filter: blur(0);
     transform: translateY(0);
+  }
+}
+
+/* Subtle movement for dimensional elements */
+
+@keyframes card-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes slow-turn {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordmark__old,
+  .wordmark__prefix,
+  .wordmark__final,
+  .hero-copy-card,
+  .closing-decoration {
+    animation: none;
+  }
+
+  .wordmark__old {
+    display: none;
+  }
+
+  .wordmark__prefix {
+    display: none;
+  }
+
+  .wordmark__final {
+    opacity: 1;
   }
 }

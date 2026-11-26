@@ -1,0 +1,299 @@
+
+.feature-showcase {
+  position: relative;
+  isolation: isolate;
+  min-height: 720px;
+  padding: 90px 5vw;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 12% 20%, rgba(244, 126, 105, .17), transparent 38%),
+    radial-gradient(ellipse at 88% 75%, rgba(185, 163, 231, .2), transparent 42%),
+    linear-gradient(135deg, #f5f6f2, #e9efec 55%, #eee9f3);
+}
+
+.feature-heading,
+.feature-controls {
+  position: relative;
+  z-index: 2;
+  width: min(1100px, 100%);
+  margin-inline: auto;
+}
+
+.feature-heading {
+  margin-bottom: 30px;
+}
+
+.feature-eyebrow {
+  color: #63817d;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .24em;
+}
+
+.feature-heading h2 {
+  margin: 12px 0 0;
+  color: #104442;
+  font-family: Georgia, serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 500;
+  line-height: .98;
+  letter-spacing: -.055em;
+}
+
+.feature-heading h2 em {
+  color: #72948e;
+}
+
+.feature-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(1100px, 100%);
+  min-height: 390px;
+  margin: auto;
+  padding: 35px 65px;
+  border: 1px solid rgba(255,255,255,.85);
+  border-radius: 30px;
+  background: linear-gradient(135deg, rgba(255,255,255,.58), rgba(255,255,255,.2));
+  box-shadow: 0 30px 70px rgba(30,67,65,.14), inset 0 1px 2px white;
+  backdrop-filter: blur(25px) saturate(145%);
+}
+
+.feature-content {
+  display: grid;
+  width: 100%;
+  grid-template-columns: .9fr 1.1fr;
+  align-items: center;
+  gap: 40px;
+  animation: feature-enter .5s ease both;
+}
+
+@keyframes feature-enter {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.scene-number {
+  display: block;
+  margin-bottom: 17px;
+  color: #79918e;
+  font-size: 10px;
+  letter-spacing: .16em;
+}
+
+.scene-tag {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 8px 12px;
+  border: 1px solid white;
+  border-radius: 30px;
+  background: rgba(255,255,255,.4);
+  color: #66817d;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .13em;
+}
+
+.scene-copy h3 {
+  margin: 0;
+  color: #124744;
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -.055em;
+}
+
+.scene-copy p {
+  max-width: 330px;
+  margin: 15px 0 20px;
+  color: #587773;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.liquid-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 16px;
+  padding: 0 18px;
+  border: 1px solid white;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(199,231,223,.5));
+  box-shadow: 0 9px 20px rgba(23,74,69,.16), inset 1px 1px 3px white;
+  color: #174d49;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.liquid-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 25px rgba(23,74,69,.22);
+}
+
+.scene-interface {
+  position: relative;
+  min-height: 245px;
+  overflow: hidden;
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,.8);
+  border-radius: 22px;
+  background: linear-gradient(145deg, #17635e, #083c3d);
+  box-shadow: 12px 17px 30px rgba(19,61,61,.2), inset 1px 1px 3px rgba(255,255,255,.55);
+  color: white;
+}
+
+.scene-interface::before {
+  content: '';
+  position: absolute;
+  top: -85px;
+  right: -50px;
+  width: 210px;
+  height: 210px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 50%;
+  box-shadow: 0 0 0 18px rgba(255,255,255,.035), 0 0 0 38px rgba(255,255,255,.025);
+}
+
+.interface-top,
+.interface-bottom {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255,255,255,.7);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+.interface-number {
+  position: absolute;
+  top: 25px;
+  right: 15px;
+  color: rgba(255,255,255,.12);
+  font-size: 145px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.1em;
+}
+
+.interface-list {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 9px;
+  margin-top: 35px;
+}
+
+.interface-item {
+  display: flex;
+  min-height: 39px;
+  align-items: center;
+  gap: 11px;
+  padding: 0 12px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 12px;
+  background: linear-gradient(110deg, rgba(255,255,255,.24), rgba(255,255,255,.07));
+  color: #f4faf5;
+  font-size: 10px;
+  backdrop-filter: blur(15px);
+}
+
+.interface-icon {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  place-items: center;
+  border-radius: 7px;
+  background: rgba(255,255,255,.2);
+}
+
+.feature-scene-coral .interface-icon { background: rgba(244,126,105,.55); }
+.feature-scene-lime .interface-icon { background: rgba(201,232,121,.4); }
+.feature-scene-lilac .interface-icon { background: rgba(185,163,231,.5); }
+
+.interface-arrow { margin-left: auto; }
+
+.interface-bottom {
+  position: absolute;
+  right: 19px;
+  bottom: 15px;
+  left: 19px;
+}
+
+.feature-arrow {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.9);
+  border-radius: 50%;
+  background: rgba(255,255,255,.65);
+  color: #174d49;
+  font-size: 20px;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background .25s ease, transform .25s ease;
+}
+
+.feature-arrow:hover {
+  background: white;
+}
+
+.feature-arrow--left { left: 12px; }
+.feature-arrow--right { right: 12px; }
+
+.feature-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 25px;
+  color: #6b8581;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+.feature-dots {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.feature-dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: rgba(31,83,78,.25);
+  cursor: pointer;
+  transition: width .35s ease, background .35s ease;
+}
+
+.feature-dots button.active {
+  width: 30px;
+  background: #155b56;
+}
+
+@media (max-width: 750px) {
+  .feature-showcase { min-height: auto; padding: 65px 18px; }
+  .feature-stage { min-height: 570px; padding: 35px 48px; }
+  .feature-content { grid-template-columns: 1fr; gap: 22px; }
+  .scene-interface { min-height: 190px; }
+  .feature-arrow--left { left: 5px; }
+  .feature-arrow--right { right: 5px; }
+  .feature-controls { font-size: 7px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-content { animation: none; }
+}
