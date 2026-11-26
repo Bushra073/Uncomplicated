@@ -2,7 +2,7 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-a.btn.text-white,
-button.btn.text-white {
+a.text-white,
+button.text-white {
   color: white;
 }

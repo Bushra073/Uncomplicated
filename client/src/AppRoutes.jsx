@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from 'react-router-dom'
 import App from './App'
 import ProcedureExplorer from './components/ProcedureExplorer/ProcedureExplorer'
@@ -9,6 +8,8 @@ import ProcedureTracker from './pages/ProcedureTracker'
 import { useAuth } from './context/AuthContext'
 import FloatingDashboard from './components/FloatingDashboard'
 import DocumentHub from './pages/DocumentHub'
+import KnowledgeShelf from './pages/KnowledgeShelf'
+import ScrollToTop from './components/ScrollToTop'
 
 function ProtectedRoute({ children }) {
   const { token } = useAuth()
@@ -18,49 +19,71 @@ function ProtectedRoute({ children }) {
 function AppRoutes() {
   const { token } = useAuth()
 
-return (
-  <>
-    <FloatingDashboard />
+  return (
+    <>
+      <ScrollToTop />
+      <FloatingDashboard />
 
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/procedures" element={<ProcedureExplorer />} />
-      <Route path="/procedures/:id" element={<ProcedureDetail />} />
+      <Routes>
+        <Route path="/" element={<App />} />
 
-      <Route
-        path="/login"
-        element={token ? <Navigate to="/dashboard" replace /> : <AuthPage />}
-      />
+        <Route
+          path="/procedures"
+          element={<ProcedureExplorer />}
+        />
 
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/procedures/:id"
+          element={<ProcedureDetail />}
+        />
 
-      <Route
-        path="/my-procedures/:id"
-        element={
-          <ProtectedRoute>
-            <ProcedureTracker />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-  path="/documents"
-  element={
-    <ProtectedRoute>
-      <DocumentHub />
-    </ProtectedRoute>
-  }
-/>
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  </>
-)
+        <Route
+          path="/login"
+          element={
+            token ? <Navigate to="/dashboard" replace /> : <AuthPage />
+          }
+        />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/my-procedures/:id"
+          element={
+            <ProtectedRoute>
+              <ProcedureTracker />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/documents"
+          element={
+            <ProtectedRoute>
+              <DocumentHub />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/knowledge"
+          element={
+            <ProtectedRoute>
+              <KnowledgeShelf />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
+  )
 }
 
 export default AppRoutes

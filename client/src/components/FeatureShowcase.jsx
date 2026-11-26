@@ -12,6 +12,8 @@ const features = [
     items: ['Passport renewal', 'Required documents', 'Application guide'],
     accent: 'coral',
     symbol: '↗',
+    route: '/procedures',
+    buttonText: 'Explore procedures',
   },
   {
     number: '02',
@@ -22,6 +24,8 @@ const features = [
     items: ['National ID', 'Academic transcript', 'Passport'],
     accent: 'lime',
     symbol: '▤',
+    route: '/documents',
+    buttonText: 'Open Document Hub',
   },
   {
     number: '03',
@@ -32,6 +36,8 @@ const features = [
     items: ['Useful guides', 'Saved articles', 'Helpful resources'],
     accent: 'lilac',
     symbol: '⌑',
+    route: '/knowledge',
+    buttonText: 'Open Knowledge Shelf',
   },
 ]
 
@@ -82,19 +88,13 @@ export default function FeatureShowcase() {
 
             <p>{feature.description}</p>
 
-            {(active === 0 || active === 1) && (
-              <button
-                className="liquid-button"
-                onClick={() =>
-                  navigate(active === 0 ? '/procedures' : '/documents')
-                }
-              >
-                {active === 0
-                  ? 'Explore procedures'
-                  : 'Open Document Hub'}
-                <span>↗</span>
-              </button>
-            )}
+            <button
+              className="liquid-button"
+              onClick={() => navigate(feature.route)}
+            >
+              {feature.buttonText}
+              <span>↗</span>
+            </button>
           </div>
 
           <div className="scene-interface">

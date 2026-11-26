@@ -1,0 +1,24 @@
+.landing-drift {
+  animation: landingDrift 6s ease-in-out infinite;
+}
+
+.landing-drift-slow {
+  animation: landingDrift 8s ease-in-out infinite reverse;
+}
+
+@keyframes landingDrift {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-drift,
+  .landing-drift-slow {
+    animation: none;
+  }
+}

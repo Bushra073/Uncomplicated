@@ -7,7 +7,8 @@ const crypto = require('crypto')
 module.exports = function (db, authenticateToken) {
   const router = express.Router()
 
-  const uploadDirectory = path.join(__dirname, 'private-uploads')
+  const uploadDirectory = process.env.UPLOAD_DIR
+  || path.join(__dirname, 'private-uploads')
 
   fs.mkdirSync(uploadDirectory, { recursive: true })
 

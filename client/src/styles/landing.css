@@ -82,6 +82,7 @@ a {
 /* Header */
 
 .site-header {
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -90,7 +91,6 @@ a {
   margin: 0 auto;
   padding: 26px 0;
 }
-
 .brand {
   display: inline-flex;
   align-items: center;

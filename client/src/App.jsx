@@ -1,196 +1,129 @@
-
 import './styles/animations.css'
 import './styles/landing.css'
+import './styles/LandingMotion.css'
 
+import LandingNavbar from './components/Landing/LandingNavbar'
+import LandingHero from './components/Landing/LandingHero'
 import FeatureShowcase from './components/FeatureShowcase'
+
 import { Link } from 'react-router-dom'
-
-
-const features = [
-  {
-    number: '01',
-    title: 'Find your way',
-    description:
-      'Turn confusing procedures into clear steps, with the documents and information you need along the way.',
-    symbol: '↗',
-    accent: 'coral',
-    tag: 'PROCEDURE NAVIGATOR',
-  },
-  {
-    number: '02',
-    title: 'Keep things together',
-    description:
-      'Keep important documents organized, track expiry dates, and see what is still missing.',
-    symbol: '▤',
-    accent: 'lime',
-    tag: 'PERSONAL DOCUMENT HUB',
-  },
-  {
-    number: '03',
-    title: 'Save what matters',
-    description:
-      'Collect useful links, guides, and resources so you can find them again when you need them.',
-    symbol: '⌑',
-    accent: 'lilac',
-    tag: 'SAVED KNOWLEDGE SHELF',
-  },
-]
+import { ArrowUpRight, Asterisk } from 'lucide-react'
 
 function App() {
   return (
-    <main className="landing-page" id="top">
-      <div className="page-noise" aria-hidden="true" />
+    <main
+      id="top"
+      className="relative isolate min-h-screen overflow-x-clip bg-[#F0F2E8] text-[#164C49]"
+    >
 
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="Uncomplicated home">
-          <span className="brand-symbol">u.</span>
-          <span className="brand-name">UNCOMPLICATED</span>
-        </a>
+      {/* Subtle background texture */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.045] [background-image:radial-gradient(#164C49_1px,transparent_1px)] [background-size:5px_5px]"
+      />
 
-        <nav className="desktop-nav" aria-label="Main navigation">
-          <a href="#why">The idea</a>
-          <a href="#features">Explore features</a>
-        </nav>
+      {/* Soft background lighting */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-0 top-0 -z-10 h-[500px] w-[45%] rounded-full bg-[#C4DCC5]/50 blur-[100px]"
+      />
 
-        <div className="auth-actions">
-  <Link
-    to="/login"
-    className="glass-button glass-button--quiet"
-  >
-    Log in
-  </Link>
+      <LandingNavbar />
 
-  <Link
-    to="/login"
-    className="glass-button glass-button--primary"
-  >
-    Sign up <span aria-hidden="true">↗</span>
-  </Link>
-</div>
-      </header>
+      <LandingHero />
 
-      <section className="hero-section" id="why">
-        <div className="hero-panel">
-          <div className="hero-panel-inner">
-            <div className="hero-topline">
-              <span className="eyebrow">
-                <span className="status-dot" />
-                A little more clarity, every day
+      {/* Editorial introduction */}
+      <section className="relative mx-auto max-w-7xl px-6 py-12 md:px-12 md:py-16">
+
+        <div className="grid items-center gap-8 md:grid-cols-[0.65fr_1.35fr]">
+
+          <div className="flex items-center gap-5">
+
+            <div className="relative grid h-24 w-24 shrink-0 place-items-center rounded-full bg-[#DDEBA8] md:h-32 md:w-32">
+
+              <div className="absolute inset-2 rounded-full border border-dashed border-[#164C49]/30" />
+
+              <Asterisk
+                size={55}
+                strokeWidth={1}
+                className="landing-drift-slow text-[#164C49]"
+              />
+
+            </div>
+
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#397C76]">
+                The idea
               </span>
-              <span className="hero-index">01 / 03</span>
-            </div>
 
-            <div className="hero-wordmark">
-              <div className="wordmark">
-                <span className="wordmark__old">complicated</span>
-                <span className="wordmark__prefix">un</span>
-                <span className="wordmark__final">uncomplicated</span>
-              </div>
-            </div>
-
-            <div className="hero-copy-card">
-              <span className="card-overline">A SPACE FOR REAL LIFE</span>
-              <h1>
-                Life is complicated.
-                <span>Keeping track shouldn&apos;t be.</span>
-              </h1>
-              <p>
-                Navigate unfamiliar procedures, organize important
-                documents, and keep useful knowledge close. All in one
-                thoughtful space.
+              <p className="mt-2 font-serif text-xl italic">
+                Less chaos.
+                <br />
+                More clarity.
               </p>
-              <div className="hero-actions">
-                <button
-                  type="button"
-                  className="glass-button glass-button--primary glass-button--large"
-                  onClick={() => alert('The dashboard will be connected later.')}
-                >
-                  Explore your space <span aria-hidden="true">↗</span>
-                </button>
-                <a className="text-link" href="#features">
-                  Discover more <span aria-hidden="true">↓</span>
-                </a>
-              </div>
             </div>
 
-            <div className="hero-side-note">
-              <span className="side-note-mark">✳</span>
-              <span>Less searching.<br />More peace of mind.</span>
-            </div>
-
-            <div className="hero-decoration hero-decoration--ring" />
-            <div className="hero-decoration hero-decoration--orb" />
           </div>
+
+          <div className="border-[#164C49]/15 md:border-l md:pl-10">
+
+            <h2 className="max-w-xl font-serif text-3xl font-normal leading-tight tracking-tight md:text-4xl">
+              The little things shouldn't
+              <span className="italic text-[#397C76]">
+                {' '}feel so big.
+              </span>
+            </h2>
+
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#526C63] md:text-base">
+              Applications, renewals, documents, deadlines and useful
+              information scattered across the internet.
+              Uncomplicated brings the pieces together, so you can
+              spend less time figuring things out and more time
+              moving forward.
+            </p>
+
+          </div>
+
         </div>
 
-        <div className="hero-caption">
-          <span>YOUR PERSONAL LIFE-ADMIN SPACE</span>
-          <span>MADE FOR THE THINGS LIFE ASKS OF YOU ↘</span>
-        </div>
       </section>
 
-      <section className="intro-section">
-        <div className="intro-label">
-          <span className="section-kicker">THE IDEA</span>
-          <span className="intro-line" />
-          <span className="intro-count">01 — 03</span>
-        </div>
+      {/* Existing feature showcase */}
+      <FeatureShowcase />
 
-        <div className="intro-content">
-          <h2>
-            The little things
-            <br />
-            <em>shouldn&apos;t feel so big.</em>
-          </h2>
-          <p>
-            Applications, renewals, documents, deadlines, useful
-            information scattered across the internet. Uncomplicated
-            brings the pieces together, so you can spend less time
-            figuring things out and more time moving forward.
-          </p>
-        </div>
+      {/* Compact footer */}
+      <footer className="mx-auto max-w-7xl px-6 pb-6 pt-10 md:px-12">
 
-        <div className="intro-stamp" aria-hidden="true">
-          <span>LESS CHAOS</span>
-          <strong>✳</strong>
-          <span>MORE CLARITY</span>
-        </div>
-      </section>
+        <div className="flex flex-wrap items-center justify-between gap-5 border-t border-[#164C49]/15 pt-6">
 
-    <FeatureShowcase />
+          <Link to="/" className="flex items-center gap-3">
 
-      
-      <section className="closing-section">
-        <div className="closing-card">
-          <span className="section-kicker">A FRESH START</span>
-          <h2>
-            Make room for
-            <br />
-            <em>what matters.</em>
-          </h2>
-          <p>
-            A little structure can make a whole lot of difference.
-            Start with one thing, and take it from there.
-          </p>
-          <button
-            type="button"
-            className="glass-button glass-button--light glass-button--large"
-            onClick={() => alert('Getting started will be implemented later.')}
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-[#164C49] font-serif text-xl italic text-white">
+              u.
+            </span>
+
+            <span className="text-xs font-semibold tracking-[0.12em]">
+              UNCOMPLICATED
+            </span>
+
+          </Link>
+
+          <span className="font-serif text-sm italic text-[#397C76]">
+            Made for real life.
+          </span>
+
+          <a
+            href="#top"
+            className="flex items-center gap-2 text-xs font-medium text-[#164C49]"
           >
-            Let&apos;s get started <span aria-hidden="true">↗</span>
-          </button>
-          <span className="closing-decoration" aria-hidden="true">✳</span>
-        </div>
-      </section>
+            Back to top
+            <ArrowUpRight size={14} />
+          </a>
 
-      <footer className="site-footer">
-        <a className="brand brand--footer" href="#top" aria-label="Back to top">
-          <span className="brand-symbol">u.</span>
-          <span className="brand-name">UNCOMPLICATED</span>
-        </a>
-        <span>Less chaos. More clarity.</span>
-        <span>Made for real life. <span className="footer-star">✳</span></span>
+        </div>
+
       </footer>
+
     </main>
   )
 }

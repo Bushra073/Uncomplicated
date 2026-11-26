@@ -1,297 +1,396 @@
 
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import {
+  Home,
+  LogOut,
+  UserRound,
+  RefreshCw,
+  AlertCircle,
+  FolderOpen,
+  ArrowUpRight,
+  FileText,
+} from 'lucide-react'
+
 import { API_URL, useAuth } from '../context/AuthContext'
-import '../styles/user-pages.css'
+
+import DashboardHero from '../components/Dashboard/DashboardHero'
+import DashboardProcedures from '../components/Dashboard/DashboardProcedures'
+import DocumentReminders from '../components/Dashboard/DocumentReminders'
+import RecentResources from '../components/Dashboard/RecentResources'
+
+import '../styles/ProcedureAnimations.css'
 
 function Dashboard() {
   const { user, token, logout } = useAuth()
+  const navigate = useNavigate()
+
   const [documents, setDocuments] = useState([])
   const [procedures, setProcedures] = useState([])
+  const [resources, setResources] = useState([])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [form, setForm] = useState({
-    document_name: '',
-    document_type: '',
-    issue_date: '',
-    expiry_date: '',
-    notes: '',
-  })
-
-  async function loadDashboard() {
-    try {
-      const headers = { Authorization: `Bearer ${token}` }
-
-      const [documentResponse, procedureResponse] = await Promise.all([
-        fetch(`${API_URL}/documents`, { headers }),
-        fetch(`${API_URL}/my-procedures`, { headers }),
-      ])
-
-      const documentData = await documentResponse.json()
-      const procedureData = await procedureResponse.json()
-
-      if (!documentResponse.ok) {
-        throw new Error(documentData.message || 'Could not load documents.')
-      }
-
-      if (!procedureResponse.ok) {
-        throw new Error(procedureData.message || 'Could not load procedures.')
-      }
-
-      setDocuments(documentData.data)
-      setProcedures(procedureData.data)
-      setError('')
-    } catch (err) {
-      setError(err.message)
-    }
-  }
+  const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
-    loadDashboard()
-  }, [token])
+    if (!token) return
 
-  async function addDocument(event) {
-    event.preventDefault()
-    setError('')
+    const controller = new AbortController()
 
-    try {
-      const response = await fetch(`${API_URL}/documents`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    async function loadDashboard() {
+      setLoading(true)
+      setError('')
+
+      try {
+        const headers = {
           Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(form),
-      })
+        }
 
-      const result = await response.json()
+        async function getData(endpoint) {
+          const response = await fetch(`${API_URL}${endpoint}`, {
+            headers,
+            signal: controller.signal,
+          })
 
-      if (!response.ok) throw new Error(result.message)
+          const result = await response.json()
 
-      setForm({
-        document_name: '',
-        document_type: '',
-        issue_date: '',
-        expiry_date: '',
-        notes: '',
-      })
+          if (!response.ok || result.status !== 'success') {
+            throw new Error(
+              result.message || `Could not load ${endpoint}`
+            )
+          }
 
-      await loadDashboard()
-    } catch (err) {
-      setError(err.message)
-    }
-  }
+          return result.data
+        }
 
-  async function deleteDocument(id) {
-    if (!window.confirm('Delete this document record?')) return
+        const [documentData, procedureData, resourceData] =
+          await Promise.all([
+            getData('/documents'),
+            getData('/my-procedures'),
+            getData('/knowledge/resources'),
+          ])
 
-    try {
-      const response = await fetch(`${API_URL}/documents/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      })
+        if (!controller.signal.aborted) {
+          setDocuments(documentData)
+          setProcedures(procedureData)
+          setResources(resourceData)
+        }
 
-      if (!response.ok) {
-        const result = await response.json()
-        throw new Error(result.message)
+      } catch (err) {
+        if (!controller.signal.aborted) {
+          setError(err.message)
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false)
+        }
       }
-
-      await loadDashboard()
-    } catch (err) {
-      setError(err.message)
     }
+
+    loadDashboard()
+
+    return () => controller.abort()
+  }, [token, refreshKey])
+
+  function handleLogout() {
+    logout()
+    navigate('/')
   }
+
+  const recentDocuments = [...documents]
+    .sort((a, b) =>
+      new Date(b.uploaded_at) - new Date(a.uploaded_at)
+    )
+    .slice(0, 3)
 
   return (
-    <main className="user-page">
-      <header className="user-header">
-        <Link to="/" className="user-brand">Uncomplicated.</Link>
-        <div>
-          <span>{user?.full_name}</span>
-          <button className="text-button" onClick={logout}>Log out</button>
-        </div>
-      </header>
+    <main className="relative min-h-screen bg-[#E4EBE6]
+      text-[#193D39]">
 
-      <section className="dashboard-intro">
-        <p className="eyebrow">YOUR PERSONAL DASHBOARD</p>
-        <h1>Welcome, {user?.full_name?.split(' ')[0]}.</h1>
-        <p className="muted">
-          Keep your documents, procedures and progress in one place.
-        </p>
-      </section>
+      {/* Background atmosphere */}
+      <div className="pointer-events-none absolute inset-0
+        bg-[radial-gradient(ellipse_at_top_left,#F8F5E9,transparent_50%)]" />
 
-      {error && <p className="form-error">{error}</p>}
+      <div className="pointer-events-none absolute right-0
+        top-96 h-72 w-72 rounded-full bg-[#C9E879]/20 blur-3xl" />
 
-      <section className="dashboard-stats">
-        <article className="user-card">
-          <span>Saved documents</span>
-          <strong>{documents.length}</strong>
-        </article>
-        <article className="user-card">
-          <span>My procedures</span>
-          <strong>{procedures.length}</strong>
-        </article>
-        <article className="user-card">
-          <span>Completed procedures</span>
-          <strong>{procedures.filter(p => p.status === 'completed').length}</strong>
-        </article>
-      </section>
+      <div className="relative mx-auto max-w-[1440px]
+        px-4 pb-12 sm:px-7 lg:px-12">
 
-      <section className="dashboard-section">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">YOUR JOURNEY</p>
-            <h2>My procedures</h2>
+        {/* Navigation */}
+        <header className="flex flex-wrap items-center
+          justify-between gap-4 py-6">
+
+          <Link to="/" className="flex items-center gap-3">
+
+            <span className="flex h-10 w-10 items-center
+              justify-center rounded-xl bg-[#16443F]
+              font-serif text-2xl text-white shadow-md">
+              u.
+            </span>
+
+            <span className="text-[10px] font-bold
+              tracking-[0.18em]">
+              UNCOMPLICATED
+            </span>
+
+          </Link>
+
+          <div className="flex items-center gap-2">
+
+            <Link
+              to="/"
+              aria-label="Home"
+              className="btn btn-circle border-white
+                bg-white/60 text-[#193D39] shadow-sm"
+            >
+              <Home size={18} />
+            </Link>
+
+            <div className="flex items-center gap-2
+              rounded-full border border-white/80
+              bg-white/50 p-1.5 pr-3 shadow-sm">
+
+              <span className="flex h-9 w-9 items-center
+                justify-center rounded-full bg-[#16443F]
+                text-white">
+                <UserRound size={18} />
+              </span>
+
+              <span className="hidden max-w-36 truncate
+                text-xs font-medium sm:block">
+                {user?.full_name || 'My account'}
+              </span>
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                aria-label="Log out"
+                title="Log out"
+                className="rounded-full p-2 text-[#66847E]
+                  transition-colors hover:bg-red-100
+                  hover:text-red-600"
+              >
+                <LogOut size={17} />
+              </button>
+
+            </div>
           </div>
-          <Link to="/procedures">Explore procedures →</Link>
-        </div>
+        </header>
 
-        {procedures.length === 0 ? (
-          <div className="user-card empty-state">
-            <p>You haven't started a procedure yet.</p>
-            <Link to="/procedures">Find a procedure</Link>
+        {/* Loading state */}
+        {loading ? (
+          <div className="flex min-h-[60vh] flex-col
+            items-center justify-center gap-4">
+
+            <span className="loading loading-spinner
+              loading-lg text-[#397C76]" />
+
+            <p className="text-sm text-[#66847E]">
+              Getting your workspace ready...
+            </p>
+
           </div>
+        ) : error ? (
+
+          /* Error state */
+          <div className="mx-auto mt-16 max-w-lg rounded-3xl
+            border border-white bg-white/60 p-8
+            text-center shadow-lg">
+
+            <AlertCircle
+              size={38}
+              className="mx-auto mb-4 text-red-500"
+            />
+
+            <h2 className="text-xl font-semibold">
+              Couldn't load your workspace
+            </h2>
+
+            <p className="mt-3 text-sm text-[#66847E]">
+              {error}
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setRefreshKey(key => key + 1)}
+              className="btn mt-5 rounded-full border-none
+                bg-[#193D39] text-white hover:bg-[#285C55]"
+            >
+              <RefreshCw size={16} />
+              Try again
+            </button>
+
+          </div>
+
         ) : (
-          <div className="user-card-list">
-            {procedures.map((procedure) => {
-              const percentage = procedure.total_steps
-                ? Math.round(
-                    (Number(procedure.completed_steps) /
-                      Number(procedure.total_steps)) * 100
-                  )
-                : 0
+          <div className="space-y-6">
 
-              return (
-                
-<article className="user-card procedure-row" key={procedure.user_procedure_id}>
-  <div className="procedure-row-content">
-    <h3>{procedure.title}</h3>
+            {/* Welcome and statistics */}
+            <DashboardHero
+              user={user}
+              documents={documents}
+              procedures={procedures}
+              resources={resources}
+            />
 
-    <p className="muted">
-      {procedure.completed_steps || 0} of {procedure.total_steps} steps completed
-    </p>
+            {/* Main dashboard layout */}
+            <div className="grid items-start gap-6
+              lg:grid-cols-[1.65fr_1fr]">
 
-    <div className="progress-track">
-      <div style={{ width: `${percentage}%` }} />
-    </div>
+              {/* Left column */}
+              <div className="min-w-0 space-y-6">
 
-    <span className="procedure-progress-label">
-      {percentage}% complete
-    </span>
-  </div>
+                <DashboardProcedures
+                  procedures={procedures}
+                  resources={resources}
+                />
 
-  <div className="procedure-row-actions">
-    <Link
-      to={`/procedures/${procedure.procedure_id}`}
-      className="procedure-guide-link"
-    >
-      View Guide
-    </Link>
+                {/* Recent documents */}
+                <section className="rounded-[28px]
+                  border border-white/80 bg-white/50
+                  p-5 shadow-lg backdrop-blur-xl md:p-7">
 
-    <Link
-      to={`/my-procedures/${procedure.user_procedure_id}`}
-      className="procedure-resume-link"
-    >
-      {procedure.status === 'completed' ? 'View Progress' : 'Resume Progress'} ↗
-    </Link>
-  </div>
-</article>
+                  <div className="mb-5 flex flex-wrap
+                    items-center justify-between gap-3">
 
-              )
-            })}
+                    <div className="flex items-center gap-3">
+
+                      <div className="rounded-2xl border
+                        border-white bg-[#DDECC5] p-3
+                        text-[#527338]">
+                        <FolderOpen size={23} />
+                      </div>
+
+                      <div>
+                        <p className="text-[10px] font-semibold
+                          tracking-[0.2em] text-[#66847E]">
+                          KEEP THINGS TOGETHER
+                        </p>
+
+                        <h2 className="text-xl font-semibold">
+                          Recent documents
+                        </h2>
+                      </div>
+
+                    </div>
+
+                    <Link
+                      to="/documents"
+                      className="flex items-center gap-2
+                        rounded-full border border-white
+                        bg-white/70 px-4 py-2 text-xs
+                        font-medium shadow-sm hover:bg-white"
+                    >
+                      View all
+                      <ArrowUpRight size={15} />
+                    </Link>
+
+                  </div>
+
+                  {recentDocuments.length === 0 ? (
+                    <div className="rounded-2xl border
+                      border-dashed border-[#193D39]/20
+                      p-6 text-center">
+
+                      <FileText
+                        size={32}
+                        className="mx-auto mb-3 text-[#66847E]"
+                      />
+
+                      <p className="text-sm text-[#66847E]">
+                        No documents saved yet.
+                      </p>
+
+                      <Link
+                        to="/documents"
+                        state={{ openForm: true }}
+                        className="btn mt-4 rounded-full
+                          border-none bg-[#193D39] text-white"
+                      >
+                        Add a document
+                      </Link>
+
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+
+                      {recentDocuments.map(doc => (
+                        <Link
+                          key={doc.document_id}
+                          to="/documents"
+                          className="group flex items-center
+                            gap-3 rounded-2xl border border-white
+                            bg-white/60 p-4 transition-all
+                            hover:bg-white hover:shadow-sm"
+                        >
+
+                          <div className="shrink-0 rounded-xl
+                            bg-[#E2ECD5] p-3 text-[#527338]">
+                            <FileText size={21} />
+                          </div>
+
+                          <div className="min-w-0 flex-1">
+
+                            <h3 className="truncate text-sm
+                              font-semibold">
+                              {doc.document_name}
+                            </h3>
+
+                            <p className="mt-1 text-xs
+                              text-[#66847E]">
+                              {doc.document_type || 'Document'}
+                            </p>
+
+                            <p className="mt-1 text-[10px]
+                              text-[#66847E]">
+                              {doc.file_path
+                                ? 'File attached'
+                                : 'Document record'}
+                            </p>
+
+                          </div>
+
+                          <ArrowUpRight
+                            size={18}
+                            className="shrink-0 text-[#66847E]
+                              transition-transform
+                              group-hover:-translate-y-1"
+                          />
+
+                        </Link>
+                      ))}
+
+                    </div>
+                  )}
+                </section>
+              </div>
+
+              {/* Right column */}
+              <aside className="min-w-0 space-y-6">
+
+                <DocumentReminders documents={documents} />
+
+                <RecentResources resources={resources} />
+
+              </aside>
+            </div>
+
           </div>
         )}
-      </section>
 
-      <section className="dashboard-section">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">PERSONAL DOCUMENT HUB</p>
-            <h2>My documents</h2>
-          </div>
-        </div>
+        {/* Footer */}
+        <footer className="mt-10 flex flex-wrap items-center
+          justify-between gap-3 border-t border-[#193D39]/10
+          pt-6 text-xs text-[#66847E]">
 
-        <form className="document-form user-card" onSubmit={addDocument}>
-          <h3>Add a document record</h3>
+          <span>Uncomplicated. Made for real life.</span>
 
-          <label>
-            Document name
-            <input
-              value={form.document_name}
-              onChange={e => setForm({ ...form, document_name: e.target.value })}
-              placeholder="e.g. National Identity Card"
-              required
-            />
-          </label>
+          <span>Less chaos. More clarity. ✳</span>
 
-          <label>
-            Document type
-            <input
-              value={form.document_type}
-              onChange={e => setForm({ ...form, document_type: e.target.value })}
-              placeholder="e.g. Identity"
-            />
-          </label>
+        </footer>
 
-          <div className="form-grid">
-            <label>
-              Issue date
-              <input
-                type="date"
-                value={form.issue_date}
-                onChange={e => setForm({ ...form, issue_date: e.target.value })}
-              />
-            </label>
-
-            <label>
-              Expiry date
-              <input
-                type="date"
-                value={form.expiry_date}
-                onChange={e => setForm({ ...form, expiry_date: e.target.value })}
-              />
-            </label>
-          </div>
-
-          <label>
-            Notes
-            <textarea
-              value={form.notes}
-              onChange={e => setForm({ ...form, notes: e.target.value })}
-              placeholder="Optional notes"
-            />
-          </label>
-
-          <button className="primary-button">Save document</button>
-        </form>
-
-        {documents.length === 0 ? (
-          <div className="user-card empty-state">
-            <p>No documents saved yet. Add your first document above.</p>
-          </div>
-        ) : (
-          <div className="user-card-list">
-            {documents.map(document => (
-              <article className="user-card document-row" key={document.document_id}>
-                <div>
-                  <h3>{document.document_name}</h3>
-                  <p className="muted">{document.document_type || 'Document'}</p>
-                  <p className="muted">
-                    {document.expiry_date
-                      ? `Expires: ${new Date(document.expiry_date).toLocaleDateString()}`
-                      : 'No expiry date recorded'}
-                  </p>
-                </div>
-                <button
-                  className="text-button danger-text"
-                  onClick={() => deleteDocument(document.document_id)}
-                >
-                  Delete
-                </button>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
+      </div>
     </main>
   )
 }
