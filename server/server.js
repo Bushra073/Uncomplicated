@@ -855,6 +855,84 @@ app.patch(
   }
 )
 
+// Remove a user's tracked procedure
+app.delete(
+  '/api/my-procedures/:id',
+  authenticateToken,
+  async (req, res) => {
+    let connection
+
+    try {
+      const id = Number(req.params.id)
+
+      if (!Number.isSafeInteger(id) || id <= 0) {
+        return res.status(400).json({
+          message: 'Invalid procedure ID.',
+        })
+      }
+
+      connection = await db.getConnection()
+      await connection.beginTransaction()
+
+      // Verify ownership and lock the record
+      const [owned] = await connection.execute(
+        `SELECT user_procedure_id
+         FROM user_procedures
+         WHERE user_procedure_id = ?
+         AND user_id = ?
+         FOR UPDATE`,
+        [id, req.user.user_id]
+      )
+
+      if (!owned.length) {
+        await connection.rollback()
+
+        return res.status(404).json({
+          message: 'Tracked procedure not found.',
+        })
+      }
+
+      // Delete saved step progress
+      await connection.execute(
+        `DELETE FROM user_step_progress
+         WHERE user_procedure_id = ?`,
+        [id]
+      )
+
+      // Delete the user's tracked procedure
+      await connection.execute(
+        `DELETE FROM user_procedures
+         WHERE user_procedure_id = ?
+         AND user_id = ?`,
+        [id, req.user.user_id]
+      )
+
+      await connection.commit()
+
+      res.json({
+        status: 'success',
+        message: 'Procedure removed successfully.',
+      })
+
+    } catch (error) {
+      if (connection) {
+        await connection.rollback().catch(() => {})
+      }
+
+      console.error('Remove procedure error:', error)
+
+      res.status(500).json({
+        message: 'Could not remove procedure.',
+      })
+
+    } finally {
+      if (connection) connection.release()
+    }
+  }
+)
+
+
+
 // Document routes
 const documentRoutes = require('./documentRoutes')
 

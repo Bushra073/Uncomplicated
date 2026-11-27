@@ -1,4 +1,4 @@
-
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Compass,
@@ -7,9 +7,58 @@ import {
   CheckCircle2,
   ExternalLink,
   BookOpen,
+  Trash2,
+  AlertCircle,
 } from 'lucide-react'
 
-function DashboardProcedures({ procedures = [], resources = [] }) {
+function DashboardProcedures({
+  procedures = [],
+  resources = [],
+  onRemove,
+}) {
+  const modalRef = useRef(null)
+  const removingRef = useRef(false)
+
+  const [selectedProcedure, setSelectedProcedure] = useState(null)
+  const [removing, setRemoving] = useState(false)
+  const [removeError, setRemoveError] = useState('')
+
+  function openRemoveModal(procedure) {
+    setSelectedProcedure(procedure)
+    setRemoveError('')
+    modalRef.current?.showModal()
+  }
+
+  function closeRemoveModal() {
+    if (removingRef.current) return
+
+    modalRef.current?.close()
+    setSelectedProcedure(null)
+    setRemoveError('')
+  }
+
+  async function confirmRemove() {
+    if (!selectedProcedure || removingRef.current) return
+
+    removingRef.current = true
+    setRemoving(true)
+    setRemoveError('')
+
+    try {
+      await onRemove(selectedProcedure.user_procedure_id)
+
+      modalRef.current?.close()
+      setSelectedProcedure(null)
+    } catch (error) {
+      setRemoveError(
+        error.message || 'Could not remove procedure.'
+      )
+    } finally {
+      removingRef.current = false
+      setRemoving(false)
+    }
+  }
+
   const sortedProcedures = [...procedures].sort(
     (a, b) =>
       Number(a.status === 'completed') -
@@ -230,7 +279,22 @@ function DashboardProcedures({ procedures = [], resources = [] }) {
 
                 {/* Action buttons */}
                 <div className="mt-5 flex flex-wrap
-                  items-center justify-end gap-2">
+                  items-center gap-2">
+
+                  <button
+                    type="button"
+                    onClick={() => openRemoveModal(procedure)}
+                    aria-label={`Remove ${procedure.title}`}
+                    title="Remove procedure"
+                    className="mr-auto flex cursor-pointer
+                      items-center gap-2 rounded-full border
+                      border-red-200 bg-red-50/70 px-3 py-2
+                      text-xs font-medium text-red-600
+                      transition-all hover:bg-red-100"
+                  >
+                    <Trash2 size={16} />
+                    Remove
+                  </button>
 
                   <Link
                     to={`/procedures/${procedure.procedure_id}`}
@@ -258,6 +322,90 @@ function DashboardProcedures({ procedures = [], resources = [] }) {
           })}
         </div>
       )}
+
+      {/* Remove confirmation modal */}
+      <dialog
+        ref={modalRef}
+        aria-labelledby="remove-procedure-title"
+        onCancel={event => {
+          event.preventDefault()
+          closeRemoveModal()
+        }}
+        className="modal backdrop:bg-[#103B37]/40
+          backdrop:backdrop-blur-sm"
+      >
+        <div className="modal-box max-w-md rounded-[28px]
+          border border-white/80 bg-[#F8F9F5] p-6
+          text-[#193D39] shadow-2xl">
+
+          <div className="mb-4 grid h-14 w-14
+            place-items-center rounded-2xl
+            bg-red-100 text-red-600">
+            <Trash2 size={26} />
+          </div>
+
+          <h3
+            id="remove-procedure-title"
+            className="text-xl font-semibold"
+          >
+            Remove this procedure?
+          </h3>
+
+          <p className="mt-3 text-sm font-semibold">
+            {selectedProcedure?.title}
+          </p>
+
+          <p className="mt-2 text-sm leading-relaxed
+            text-[#66847E]">
+            Your saved progress will be permanently removed.
+            Your documents and saved resources will remain
+            unaffected. You can start this procedure again
+            whenever you want.
+          </p>
+
+          {removeError && (
+            <div role="alert" className="mt-4 flex items-center
+              gap-2 rounded-xl bg-red-50 p-3
+              text-xs text-red-600">
+              <AlertCircle size={17} className="shrink-0" />
+              {removeError}
+            </div>
+          )}
+
+          <div className="modal-action flex flex-wrap gap-2">
+
+            <button
+              type="button"
+              disabled={removing}
+              onClick={closeRemoveModal}
+              className="btn rounded-full border-[#193D39]/15
+                bg-white text-[#193D39]"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              disabled={removing || !selectedProcedure}
+              onClick={confirmRemove}
+              className="btn rounded-full border-none
+                bg-red-600 text-white hover:bg-red-700"
+            >
+              {removing ? (
+                <>
+                  <span className="loading loading-spinner
+                    loading-xs" />
+                  Removing...
+                </>
+              ) : (
+                'Remove procedure'
+              )}
+            </button>
+
+          </div>
+        </div>
+      </dialog>
+
     </section>
   )
 }

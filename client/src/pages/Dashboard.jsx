@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -91,6 +90,36 @@ function Dashboard() {
 
     return () => controller.abort()
   }, [token, refreshKey])
+
+  // Remove a tracked procedure
+  async function handleRemoveProcedure(userProcedureId) {
+    const response = await fetch(
+      `${API_URL}/my-procedures/${userProcedureId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+
+    const result = await response.json()
+
+    if (!response.ok || result.status !== 'success') {
+      throw new Error(
+        result.message || 'Could not remove procedure.'
+      )
+    }
+
+    // Update the dashboard immediately
+    setProcedures(current =>
+      current.filter(
+        procedure =>
+          Number(procedure.user_procedure_id) !==
+          Number(userProcedureId)
+      )
+    )
+  }
 
   function handleLogout() {
     logout()
@@ -244,6 +273,7 @@ function Dashboard() {
                 <DashboardProcedures
                   procedures={procedures}
                   resources={resources}
+                  onRemove={handleRemoveProcedure}
                 />
 
                 {/* Recent documents */}
