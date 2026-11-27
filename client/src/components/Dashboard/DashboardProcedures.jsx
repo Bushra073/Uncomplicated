@@ -65,9 +65,13 @@ function DashboardProcedures({
       Number(b.status === 'completed')
   )
 
+  
   return (
-    <section className="rounded-[28px] border border-white/80
-      bg-white/50 p-5 shadow-lg backdrop-blur-xl md:p-7">
+  <section
+    id="my-procedures"
+    className="scroll-mt-6 rounded-[28px] border border-white/80
+      bg-white/50 p-5 shadow-lg backdrop-blur-xl md:p-7"
+  >
 
       {/* Section heading */}
       <div className="mb-6 flex flex-wrap items-center

@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom'
 import {
   Compass,
@@ -19,13 +18,35 @@ function DashboardHero({
     p => p.status === 'completed'
   ).length
 
+  // Determine where My procedures should navigate
+  const myProceduresRoute =
+    procedures.length === 0
+      ? '/procedures'
+      : procedures.length === 1
+        ? `/my-procedures/${procedures[0].user_procedure_id}`
+        : '/dashboard#my-procedures'
+
+  function handleShortcutClick(event, item) {
+    if (
+      item.label === 'My procedures' &&
+      procedures.length > 1
+    ) {
+      event.preventDefault()
+
+      document.getElementById('my-procedures')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    }
+  }
+
   const stats = [
     {
       label: 'My procedures',
       count: procedures.length,
       detail: `${completed} completed`,
       icon: Compass,
-      route: '/procedures',
+      route: myProceduresRoute,
       style: 'from-[#F9E4D9] to-[#EBC2AD]',
     },
     {
@@ -122,6 +143,7 @@ function DashboardHero({
             <Link
               key={item.label}
               to={item.route}
+              onClick={event => handleShortcutClick(event, item)}
               className={`group relative overflow-hidden rounded-[26px]
                 border border-white/80 bg-gradient-to-br ${item.style}
                 p-5 text-[#193D39] shadow-md transition-all duration-300
