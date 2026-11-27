@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import './FeatureShowcase.css'
 
 const features = [
@@ -52,6 +53,9 @@ export default function FeatureShowcase() {
     )
   }
 
+  const arrowStyle =
+    'absolute z-10 top-1/2 -translate-y-1/2 grid place-items-center w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#103B37] text-white shadow-lg cursor-pointer transition-all duration-300 hover:bg-[#28665B] hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#103B37]'
+
   return (
     <section id="features" className="feature-showcase">
       <div className="feature-heading">
@@ -67,12 +71,14 @@ export default function FeatureShowcase() {
       </div>
 
       <div className={`feature-stage feature-scene-${feature.accent}`}>
+
         <button
-          className="feature-arrow feature-arrow--left"
+          type="button"
+          className={`${arrowStyle} left-1 md:left-1`}
           onClick={() => changeSlide(-1)}
           aria-label="Previous feature"
         >
-          ←
+          <ArrowLeft size={26} strokeWidth={2} />
         </button>
 
         <div className="feature-content" key={feature.number}>
@@ -88,13 +94,35 @@ export default function FeatureShowcase() {
 
             <p>{feature.description}</p>
 
-            <button
+
+            {/* <button
               className="liquid-button"
               onClick={() => navigate(feature.route)}
             >
               {feature.buttonText}
               <span>↗</span>
-            </button>
+            </button> */}
+
+          <button
+  type="button"
+  onClick={() => navigate(feature.route)}
+  className="group relative inline-flex cursor-pointer items-center gap-4 overflow-hidden rounded-full border border-white/50 bg-gradient-to-br from-[#518B7E]/90 via-[#235C51]/95 to-[#103B37] py-2 pl-5 pr-2 text-sm font-semibold text-white backdrop-blur-xl shadow-[0_8px_20px_rgba(16,59,55,0.25),inset_0_2px_3px_rgba(255,255,255,0.4),inset_0_-3px_5px_rgba(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-1 hover:brightness-110 active:scale-95"
+>
+  {/* Glossy glass reflection */}
+  <span
+    aria-hidden="true"
+    className="pointer-events-none absolute left-[12%] top-[3px] h-[38%] w-[76%] rounded-full bg-gradient-to-b from-white/25 to-transparent"
+  />
+
+  <span className="relative z-10">
+    {feature.buttonText}
+  </span>
+
+  <span className="relative z-10 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#EFF6CF] to-[#C4D78B] text-lg text-[#103B37] shadow-inner transition-transform duration-300 group-hover:rotate-12">
+    ↗
+  </span>
+</button>
+
           </div>
 
           <div className="scene-interface">
@@ -134,11 +162,12 @@ export default function FeatureShowcase() {
         </div>
 
         <button
-          className="feature-arrow feature-arrow--right"
+          type="button"
+          className={`${arrowStyle} right-1 md:right-1`}
           onClick={() => changeSlide(1)}
           aria-label="Next feature"
         >
-          →
+          <ArrowRight size={26} strokeWidth={2} />
         </button>
       </div>
 

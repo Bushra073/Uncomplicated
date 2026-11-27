@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-
+import HelpModal from './HelpModal'
+import { CircleHelp } from 'lucide-react'
 import {
   ArrowUpRight,
   ArrowDown,
@@ -87,19 +88,26 @@ export default function LandingHero() {
             </p>
 
             <div className="mt-7 flex flex-wrap items-center gap-5">
+              
+<HelpModal>
+  {(openHelp) => (
+    <button
+      type="button"
+      onClick={() => token ? navigate('/dashboard') : openHelp()}
+      className="group flex cursor-pointer items-center gap-4 rounded-full bg-[#DDEBA8] py-2 pl-5 pr-2 text-sm font-semibold text-[#103B37] shadow-lg transition duration-300 hover:-translate-y-1 hover:bg-[#EDF5C8]"
+    >
+      {token ? 'Open your dashboard' : 'Help & Getting Started'}
 
-              <button
-                type="button"
-                onClick={() => navigate(token ? '/dashboard' : '/login')}
-                className="group flex cursor-pointer items-center gap-4 rounded-full bg-[#DDEBA8] py-2 pl-5 pr-2 text-sm font-semibold text-[#103B37] shadow-lg transition duration-300 hover:-translate-y-1 hover:bg-[#EDF5C8]"
-              >
-                {token ? 'Open your dashboard' : 'Explore your space'}
-
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-[#164C49] text-white transition group-hover:rotate-12">
-                  <ArrowUpRight size={18} />
-                </span>
-
-              </button>
+      <span className="grid h-9 w-9 place-items-center rounded-full bg-[#164C49] text-white transition group-hover:rotate-12">
+        {token ? (
+          <ArrowUpRight size={18} />
+        ) : (
+          <CircleHelp size={18} />
+        )}
+      </span>
+    </button>
+  )}
+</HelpModal>
 
               <Link
                 to="/procedures"
